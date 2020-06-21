@@ -10,24 +10,28 @@ namespace ShoppingList.Controllers
     [Authorize]
     public class HomeController : Controller
     {
+
+        private DatabaseContext db = new DatabaseContext();
         public ActionResult Index()
         {
-
+           
+            
             var products = new List<ShoppingProduct>
             {
                 new ShoppingProduct("Bułka", 3),
                 new ShoppingProduct("Piwo", 10)
             };
+            db.ShoppingList.Add(new ShoppingArrayList(products, "Zakupy cotygodniowe", "Grube zakupy w galerii auchan bonarka"));
+            db.SaveChanges();
+            var shoppingsFromDatabase = db.ShoppingList.ToList();
             var shoppingList = new List<ShoppingArrayList>
             {
                 new ShoppingArrayList(products, "Zakupy cotygodniowe", "Grube zakupy w galerii auchan bonarka")
             };
-            var shoppings = new List<Shopping>
-            {
-                new Shopping(shoppingList)
-            };
 
-            ViewBag.Shoppings = shoppings;
+            shoppingList.AddRange(shoppingsFromDatabase);
+
+            ViewBag.ShoppingLists = shoppingList;
 
             return View();
         }

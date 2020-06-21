@@ -39,50 +39,48 @@
 </style>
 
 <div>
-    @{
-        foreach (var shopping in ViewBag.Shoppings)
-        {
-
-            <div style="position: center; text-align:center; width: 100%;">
-                <h1>Twoje listy zakupów</h1>
-            </div>
-            <ul>
-                @{foreach (var shoppingList in shopping.ShoppingLists)
-                    {
 
 
-                        <li style="font-size: 25px;">
-                            <h3>
-                                Nazwa: @shoppingList.Name
-                            </h3>
-                            <h4>
-                                Opis: @shoppingList.Description
-                            </h4>
-                        </li>
-                        <ul class="a">
+    <div style="position: center; text-align:center; width: 100%;">
+        <h1>Twoje listy zakupów</h1>
+    </div>
+    <ul>
+        @{foreach (var shoppingList in ViewBag.ShoppingLists)
+            {
 
-                            @{ foreach (var shoppingProduct in shoppingList.Products)
-                                {
 
-                                    <li class="a">
-                                        <div class="row d-inline-flex w-100 ml-3">
-                                            <div class="col-xs-6">
-                                                @shoppingProduct.Name
-                                            </div>
-                                            <div class="col-xs-6">
-                                                Ilość: @shoppingProduct.Quantity
-                                            </div>
-                                        </div>
-                                    </li>
+                <li style="font-size: 25px;">
+                    <h3>
+                        Nazwa: @shoppingList.Name
+                    </h3>
+                    <h4>
+                        Opis: @shoppingList.Description
+                    </h4>
+                </li>
+                <ul class="a">
 
-                                }
-                            }
-                        </ul>
+                    @{ foreach (var shoppingProduct in shoppingList.Products)
+                        {
+
+                            <li class="a">
+                                <div class="row d-inline-flex w-100 ml-3">
+                                    <div class="col-xs-6">
+                                        @shoppingProduct.Name
+                                    </div>
+                                    <div class="col-xs-6">
+                                        Ilość: @shoppingProduct.Quantity
+                                    </div>
+                                </div>
+                            </li>
+
+                        }
                     }
-                }
-            </ul>
+                </ul>
+            }
         }
-    }
-    <input class="a" type="button" value="Dodaj nowe zakupy" onclick="location.href='@Url.Action("Contact", "Home")'" />
+    </ul>
+
+
+    <input class="a" type="button" value="Dodaj nowe zakupy" onclick="location.href='@Url.Action("Contat", "Home")'" />
     <input class="a" type="button" value="Dodaj nową listę" onclick="location.href='@Url.Action("About", "Home")'" />
 </div>
