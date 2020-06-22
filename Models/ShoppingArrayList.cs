@@ -15,7 +15,7 @@ namespace ShoppingList.Models
 
         public string Name { get; set; }
 
-        public string Description{ get; set; }
+        public string Description { get; set; }
 
         public ShoppingArrayList(List<ShoppingProduct> products, string name, string description)
         {
@@ -27,5 +27,19 @@ namespace ShoppingList.Models
         public ShoppingArrayList()
         {
         }
+
+    }
+    public class AddListViewModel
+    {
+        public int Id { get; set; }
+        [Required]
+        [DataType(DataType.Text)]
+        [Display(Name = "Nazwa listy")]
+        public string ListName { get; set; }
+
+        [Required]
+        [DataType(DataType.Text)]
+        [Display(Name = "Opis listy")]
+        public string ListDescription { get; set; }
     }
 }
