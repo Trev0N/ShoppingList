@@ -12,7 +12,6 @@ namespace ShoppingList.Models
         [Key]
         public int Id { get; set; }
         public ICollection<ShoppingProduct> Products { get; set; }
-
         public string Name { get; set; }
 
         public string Description { get; set; }
@@ -29,6 +28,20 @@ namespace ShoppingList.Models
         }
 
     }
+    public class ProductModel
+    {
+
+        public int ListId { get; set; }
+        [Required]
+        [DataType(DataType.Text)]
+        [Display(Name = "Nazwa")]
+        public string ProductName { get; set; }
+
+        [DataType(DataType.Text)]
+        [Display(Name = "Ilość")]
+        public double ProductQuantity { get; set; }
+    }
+
     public class AddListViewModel
     {
         public int Id { get; set; }
@@ -41,5 +54,9 @@ namespace ShoppingList.Models
         [DataType(DataType.Text)]
         [Display(Name = "Opis listy")]
         public string ListDescription { get; set; }
+
+        [Display(Name = "Produkty")]
+        public List<ProductModel> ProductModels { get; set; } = new List<ProductModel> { };
+        
     }
 }

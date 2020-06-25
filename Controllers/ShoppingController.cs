@@ -15,32 +15,28 @@ namespace ShoppingList.Controllers
         private DatabaseContext db = new DatabaseContext();
         public ActionResult Add()
         {
-            return View();
+            AddListViewModel model = new AddListViewModel();
+            return View(model);
         }
 
-        //
-        // POST: /Manage/SetPassword
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Add(AddListViewModel model)
         {
-            var products = new List<ShoppingProduct>
-            {
-                new ShoppingProduct("Seks", 3),
-                new ShoppingProduct("Piwo", 10)
-            };
             if (ModelState.IsValid)
             {
                 ShoppingArrayList shoppingArrayList = new ShoppingArrayList();
                 shoppingArrayList.Name = model.ListName;
                 shoppingArrayList.Description = model.ListDescription;
-                shoppingArrayList.Products = products;
                 db.ShoppingList.Add(shoppingArrayList);
                 db.SaveChanges();
             }
+            var shoppingsFromDatabase = db.ShoppingList
+    .Include("Products")
+    .ToList();
 
-            // Jeśli dotarliśmy tak daleko, oznacza to, że wystąpił błąd. Wyświetl ponownie formularz
-            return View(model);
+            ViewBag.ShoppingLists = shoppingsFromDatabase;
+            return View("~/Views/Home/Index.cshtml");
         }
 
     }

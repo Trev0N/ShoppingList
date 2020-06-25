@@ -1,6 +1,8 @@
 ﻿using ShoppingList.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -15,21 +17,9 @@ namespace ShoppingList.Controllers
         private DatabaseContext db = new DatabaseContext();
         public ActionResult Index()
         {
-           
-            //var products = new List<ShoppingProduct>
-            //{
-            //    new ShoppingProduct("Bułka", 3),
-            //    new ShoppingProduct("Piwo", 10)
-            //};
-            //db.ShoppingList.Add(new ShoppingArrayList(products, "Zakupy cotygodniowe", "Grube zakupy w galerii auchan bonarka"));
-            //db.SaveChanges();
             var shoppingsFromDatabase = db.ShoppingList
                 .Include("Products")
                 .ToList();
-            //var shoppingList = new List<ShoppingArrayList>
-            //{
-            //    new ShoppingArrayList(products, "Zakupy cotygodniowe", "Grube zakupy w galerii auchan bonarka")
-            //};
 
             var shoppingList = shoppingsFromDatabase;
 
@@ -52,7 +42,7 @@ namespace ShoppingList.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(AddListViewModel model)
+        public ActionResult Edit(AddListViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -61,17 +51,63 @@ namespace ShoppingList.Controllers
                 shoppings.Description = model.ListDescription;
                 db.SaveChanges();
             }
+            var shoppingsFromDatabase = db.ShoppingList
+    .Include("Products")
+    .ToList();
+
+            ViewBag.ShoppingLists = shoppingsFromDatabase;
+            // Jeśli dotarliśmy tak daleko, oznacza to, że wystąpił błąd. Wyświetl ponownie formularz
+            return View("index");
+        }
+
+        public ActionResult EditProduct(int id)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditProduct(ProductModel model, int id)
+        {
+            if (ModelState.IsValid)
+            {
+                shoppings = db.ShoppingList.Find(id);
+                if(shoppings.Products == null) {
+                    shoppings.Products = new Collection<ShoppingProduct> { };
+                }
+                shoppings.Products.Add(new ShoppingProduct(model.ProductName, model.ProductQuantity));
+                db.SaveChanges();
+            }
 
             // Jeśli dotarliśmy tak daleko, oznacza to, że wystąpił błąd. Wyświetl ponownie formularz
             return View(model);
         }
 
 
-        public ActionResult Contact()
+        public ActionResult DeleteList(int id)
         {
-            ViewBag.Message = "Your contact page.";
+            db.ShoppingList.Remove(
+            db.ShoppingList.Include("Products")
+                .SingleOrDefault(x => x.Id == id));
+            db.SaveChanges();
+            var shoppingsFromDatabase = db.ShoppingList
+    .Include("Products")
+    .ToList();
 
-            return View();
+            ViewBag.ShoppingLists = shoppingsFromDatabase;
+            return View("Index");
+        }
+
+        public ActionResult DeleteProduct(int id)
+        {
+            db.ShoppingProduct.Remove(db.ShoppingProduct.Find(id));
+            db.SaveChanges();
+            var shoppingsFromDatabase = db.ShoppingList
+                .Include("Products")
+                .ToList();
+            
+            ViewBag.ShoppingLists = shoppingsFromDatabase;
+            return View("Index");
         }
     }
 }
